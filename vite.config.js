@@ -4,7 +4,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/hdx-signals-inform/',
+  base: '/signals-inform/',
   plugins: [
     svelte()
   ],
