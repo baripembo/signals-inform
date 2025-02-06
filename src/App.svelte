@@ -20,7 +20,10 @@
 </script>
 
 {#if data.length > 0}
+  <h2><strong>{data[0].country}</strong></h2>
   <LineChart {data} />
   <br><br>
+
+  <h2><strong>{data[0].country}</strong></h2>
   <SmallMultiples {data} />
 {/if}

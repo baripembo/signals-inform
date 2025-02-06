@@ -6,7 +6,6 @@
 
   let chartRef;
   let minDate, maxDate;
-  let title;
   let filteredData;
 
   onMount(() => {
@@ -27,8 +26,6 @@
         complexity: +d.complexity
       }))
       .sort((a, b) => a.date - b.date);
-
-    title = filteredData[0].country;
 
     // Extract min and max date for the X-axis
     [minDate, maxDate] = d3.extent(filteredData, d => d.date);
@@ -55,7 +52,7 @@
       .range([0, width]);
 
     const yScale = d3.scaleLinear()
-      .domain([2, d3.max(filteredData, d => Math.max(d.inform_severity_index, d.impact_crisis, d.people_condition, d.complexity))])
+      .domain([2, 5])//d3.max(filteredData, d => Math.max(d.inform_severity_index, d.impact_crisis, d.people_condition, d.complexity))]
       .nice()
       .range([height, 0]);
 
@@ -140,7 +137,6 @@
   }
 </script>
 
-<h2><strong>{title}</strong></h2>
 <div bind:this={chartRef} class="chart"></div>
 
 

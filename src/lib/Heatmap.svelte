@@ -3,11 +3,9 @@
   import * as d3 from "d3";
 
   export let data = [];
-  export let iso3 = "COL";
 
   let chartRef;
   let minDate, maxDate;
-  let title;
 
   // Define indicators with labels and colors
   const indicators = [
@@ -26,7 +24,6 @@
   function renderHeatmap() {
     // Filter data for the selected country
     const filteredData = data
-      .filter(d => d.iso3 === iso3)
       .map(d => ({
         date: new Date(d.date),
         country: d.country,
@@ -37,17 +34,14 @@
       }))
       .sort((a, b) => a.date - b.date);
 
-    title = filteredData[0]?.country || "Unknown Country";
-
     // Extract min and max date for X-axis
     [minDate, maxDate] = d3.extent(filteredData, d => d.date);
 
     // Define chart dimensions
-    const margin = { top: 40, right: 20, bottom: 50, left: 150 };
-    const width = 650 - margin.left - margin.right;
-    const height = 200 - margin.top - margin.bottom;
-    const cellPadding = 20;
-    const gridSize = Math.floor(width / 12) - cellPadding;
+    const margin = { top: 0, right: 20, bottom: 50, left: 150 };
+    const width = 1200 - margin.left - margin.right;
+    const height = 98 - margin.top - margin.bottom;
+    const gridSize = 10;
 
     // Flatten data for heatmap
     const heatmapData = indicators.flatMap(({ key }) =>
@@ -59,9 +53,16 @@
     );
 
     // Define scales
-    const xScale = d3.scaleTime()
-      .domain([minDate, maxDate])
-      .range([0, width]);
+    // const xScale = d3.scaleTime()
+    //   .domain([minDate, maxDate])
+    //   .range([0, width]);
+
+    // Define xScale based on the number of unique dates
+    const uniqueDates = [...new Set(heatmapData.map(d => d.date))];
+    const xScale = d3.scaleBand()
+      .domain(uniqueDates)
+      .range([0, width])
+      .padding(0.1);
 
     const yScale = d3.scaleBand()
       .domain(indicators.map(d => d.key)) // Use indicator keys for positioning
@@ -70,10 +71,11 @@
 
     // Create a unique color scale for each indicator
     const colorScales = {};
+    //const minValue = d3.min(d => d.value);
     indicators.forEach(({ key, color }) => {
       colorScales[key] = d3.scaleLinear()
-        .domain([2, d3.max(heatmapData.filter(d => d.indicator === key), d => d.value)])
-        .range(["#BB8EC0", "#5C3578"]); // Light to assigned indicator color
+        .domain([3, d3.max(heatmapData.filter(d => d.indicator === key), d => d.value)])
+        .range(["#BB8EC0", "#7C4192", "#5C3578", "#433557"]); // Light to assigned indicator color
     });
 
     // colorScales["inform_severity_index"] = ["#FFF", "#BB8EC0", "#7C4192", "#5C3578", "#433557"];
@@ -91,7 +93,8 @@
     svg.append("g")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(xScale)
-        .ticks(6).tickSize(0).tickPadding(8).tickFormat(d3.timeFormat("%Y")));
+        .tickValues([...new Set(heatmapData.map(d => d3.timeYear(d.date)))])
+        .tickSize(0).tickPadding(8).tickFormat(d3.timeFormat("%Y")));
 
     // Add Y-axis with custom labels
     svg.append("g")
@@ -105,12 +108,14 @@
       .enter()
       .append("rect")
       .attr("class", "heatmap-rect")
-      .attr("x", d => xScale(d.date) + cellPadding / 2) // Add spacing
-      //.attr("x", d => xScale(d.date))
+      .attr("x", d => xScale(d.date))
       .attr("y", d => yScale(d.indicator))
       .attr("width", gridSize)
-      .attr("height", yScale.bandwidth())
-      .attr("fill", d => colorScales[d.indicator](d.value)); // Use correct indicator color scale
+      .attr("height", gridSize)
+      .attr("fill", (d) => {
+        console.log(d.value, colorScales[d.indicator](d.value))
+        return colorScales[d.indicator](d.value)
+      }); // Use correct indicator color scale
   
 
     // // Add color legend
@@ -142,10 +147,9 @@
   }
 </script>
 
-{#if data}
-  <h2><strong>{title}</strong></h2>
-  <div bind:this={chartRef} class="chart"></div>
-{/if}
+
+<div bind:this={chartRef} class="chart"></div>
+
 
 <style>
   .chart {

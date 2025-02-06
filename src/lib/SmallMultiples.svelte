@@ -6,7 +6,6 @@
 
   let chartRef;
   let minDate, maxDate;
-  let title;
 
   onMount(() => {
     if (data.length > 0) {
@@ -26,8 +25,6 @@
         complexity: +d.complexity
       }))
       .sort((a, b) => a.date - b.date);
-
-    title = filteredData[0]?.country || "Unknown Country";
 
     // Extract min and max date for the X-axis
     [minDate, maxDate] = d3.extent(filteredData, d => d.date);
@@ -49,7 +46,7 @@
     const xScale = d3.scaleTime().domain([minDate, maxDate]).range([0, width]);
 
     const yScale = d3.scaleLinear()
-      .domain([2, d3.max(filteredData, d => Math.max(d.inform_severity_index, d.impact_crisis, d.people_condition, d.complexity))])
+      .domain([2, 5]) //d3.max(filteredData, d => Math.max(d.inform_severity_index, d.impact_crisis, d.people_condition, d.complexity))]
       .nice()
       .range([height, 0]);
 
@@ -156,7 +153,7 @@
       // Add title for each chart
       svg.append("text")
         .attr("x", width / 2)
-        .attr("y", -20)
+        .attr("y", -15)
         .attr("text-anchor", "middle")
         .style("font-size", "14px")
         .text(label);
@@ -164,10 +161,9 @@
   }
 </script>
 
-{#if data}
-  <h2><strong>{title}</strong></h2>
-  <div bind:this={chartRef} class="chart"></div>
-{/if}
+
+<div bind:this={chartRef} class="chart"></div>
+
 
 <style>
   .chart {
