@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import LineChart from "./lib/LineChart.svelte";
-  import Heatmap from "./lib/Heatmap.svelte";
   import SmallMultiples from "./lib/SmallMultiples.svelte";
 
   let data = [];

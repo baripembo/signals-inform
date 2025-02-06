@@ -13,7 +13,6 @@
   onMount(() => {
     if (data.length > 0) {
       renderChart();
-      console.log('chart data',data)
     }
   });
 
@@ -30,8 +29,6 @@
         complexity: +d.complexity
       }))
       .sort((a, b) => a.date - b.date);
-
-    console.log('filteredData',filteredData)
 
     title = filteredData[0].country;
 
@@ -122,7 +119,7 @@
         .attr("d", line.y(d => yScale(d[indicator])));
     });
 
-    
+
     // Function to format column names
     function formatLabel(text) {
       return text
