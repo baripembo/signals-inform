@@ -93,7 +93,7 @@
 
       // Y-axis
       svg.append("g")
-        .call(d3.axisLeft(yScale).ticks(3).tickPadding(8).tickSize(-width).tickFormat(d3.format(".1f")));
+        .call(d3.axisLeft(yScale).ticks(4).tickPadding(8).tickSize(-width).tickFormat(d3.format(".0f")));
 
       // Line generator
       const line = d3.line()
