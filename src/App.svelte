@@ -6,10 +6,16 @@
 
   let data = [];
 
+  // get location from url
+  let url = window.location.href;
+  let params = new URLSearchParams(window.location.search);
+  let location = params.get('location');
+  let iso3 = location && location.trim() !== '' ? location.toUpperCase() : 'COL';
+
   onMount(async () => {
     const csvData = await d3.csv('inform_severity_full_dataset.csv');
-    console.log('app data', csvData);
-    data = csvData;
+    data = csvData.filter(row => row.iso3 === iso3);
+    console.log(iso3, data);
   });
 </script>
 

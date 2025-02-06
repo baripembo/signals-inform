@@ -3,7 +3,6 @@
   import * as d3 from 'd3';
 
   export let data = [];
-  export let iso3 = "COL";
 
   let chartRef;
   let minDate, maxDate;
@@ -18,7 +17,6 @@
   function renderCharts() {
     // Filter data for the selected country
     const filteredData = data
-      .filter(d => d.iso3 === iso3)
       .map(d => ({
         date: new Date(d.date),
         country: d.country,
@@ -98,7 +96,7 @@
 
       // Y-axis
       svg.append("g")
-        .call(d3.axisLeft(yScale).ticks(3).tickSize(-width).tickFormat(d3.format(".1f")));
+        .call(d3.axisLeft(yScale).ticks(3).tickPadding(8).tickSize(-width).tickFormat(d3.format(".1f")));
 
       // Line generator
       const line = d3.line()

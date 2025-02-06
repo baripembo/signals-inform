@@ -3,7 +3,6 @@
   import * as d3 from 'd3';
 
   export let data = [];
-  export let iso3 = "COL";
 
   let chartRef;
   let minDate, maxDate;
@@ -19,7 +18,6 @@
   function renderChart() {
     // Filter data for the selected country
     filteredData = data
-      .filter(d => d.iso3 === iso3)
       .map(d => ({
         date: new Date(d.date),
         country: d.country,
